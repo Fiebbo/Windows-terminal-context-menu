@@ -12,6 +12,8 @@ $wslIcoFileName = "linux.ico"
 $psIcoFileName = "powershell.ico"
 $psCoreIcoFileName = "powershell-core.ico"
 $azureCoreIcoFileName = "azure.ico"
+$gitBashIcoFileName = "git-bash.ico"
+$ubuntuIcoFileName = "ubuntu.ico"
 $unknownIcoFileName = "unknown.ico"
 $menuRegID = "WindowsTerminal"
 $contextMenuLabel = "Open Windows Terminal here"
@@ -152,17 +154,23 @@ $profiles | ForEach-Object {
         elseif ($_.icon) {
             $icoPath = $_.icon
         }
-        elseif(($commandLine -match "^cmd\.exe\s?.*")) {
+        elseif(($commandLine -match ".*cmd\.exe\s?.*") -or ($source -eq "Windows PowerShell")) {
             $icoPath = "$cmdIcoFileName"
         }
-        elseif (($commandLine -match "^powershell\.exe\s?.*")) {
+        elseif (($commandLine -match ".*powershell\.exe\s?.*") -or ($source -eq "Windows PowerShell")) {
             $icoPath = "$psIcoFileName"
+        }
+        elseif ($source -match ".*[Uu]buntu.*") {
+            $icoPath = "$ubuntuIcoFileName"
         }
         elseif ($source -eq "Windows.Terminal.Wsl") {
             $icoPath = "$wslIcoFileName"
         }
         elseif ($source -eq "Windows.Terminal.PowershellCore") {
             $icoPath = "$psCoreIcoFileName"
+        }
+        elseif ($source -eq "Git") {
+            $icoPath = "$gitBashIcoFileName"
         }
         elseif ($source -eq "Windows.Terminal.Azure") {
             $icoPath = "$azureCoreIcoFileName"
@@ -180,9 +188,9 @@ $profiles | ForEach-Object {
 
         Add-SubmenuReg -regPath:$subItemRegPath -label:$label_f -iconPath:$iconPath_f -command:$command_f
 
-        if ($configEntry.showRunAs) {
-            Add-SubmenuReg -regPath:$subItemAdminRegPath -label:$labelAdmin_f -iconPath:$iconPath_f -command:$commandAdmin_f
-        }
+        # if ($configEntry.showRunAs) {
+        Add-SubmenuReg -regPath:$subItemAdminRegPath -label:$labelAdmin_f -iconPath:$iconPath_f -command:$commandAdmin_f
+        # }
     }else{
         Write-Host "Skip entry $profileName => $subItemRegPath"
     }
